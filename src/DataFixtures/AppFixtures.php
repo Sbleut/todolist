@@ -20,11 +20,25 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         
-        $users = UserFactory::createMany(10);
+        // utilisateur spécifique UserName : 'Anonyme'
+        $user = UserFactory::createOne([
+            'email' => 'anonym@.com',
+            'password' => 'password',
+            'roles' => ["ROLE_USER"],
+            'username' => 'Anonyme',
 
-        TaskFactory::createMany(20, function() use ($users) {
+        ]);
+
+        // $user->setPassword($this->hasher->hashPassword($user, $user->getPassword()));
+
+
+
+        // Nourrir avec des infos qui vont bien. Re Hash de password. 
+        UserFactory::createMany(10);
+
+        TaskFactory::createMany(50, function() {
             return [
-                'author' => $users[array_rand($users)]
+                'author' => UserFactory::random()
             ];
         });
 

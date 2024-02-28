@@ -5,13 +5,16 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Form\TaskType as FormTaskType;
 use App\Repository\TaskRepository;
+use AppBundle\Form\TaskType;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class TaskController extends AbstractController
 {
@@ -50,17 +53,33 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/edit', name: "task_edit")]
-    public function editAction(Task $task, Request $request)
+    public function editAction(Task $task, Request $request, EntityManagerInterface $entityManager)
     {
+        $form = $this->createForm(TaskType::class, $task);
 
-        return $this->render('task/edit.html.twig');
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($task);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'La tâche a bien été modifiée.');
+
+            return $this->redirectToRoute('task_list');
+        }
+
+        return $this->render('task/edit.html.twig', [
+            'form' => $form->createView(),
+            'task' => $task,
+        ]);
     }
     
     #[Route('/tasks/{id}/toggle', name: "task_toggle")]
     public function toggleTaskAction(Task $task, EntityManagerInterface $entityManager)
     {
         $task->setIsDone(!$task->isIsDone());
-
+        
+        $entityManager->persist($task);
         $entityManager->flush();
 
         $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
@@ -71,7 +90,13 @@ class TaskController extends AbstractController
     #[Route('/tasks/{id}/delete', name: "task_delete")]
     public function deleteTaskAction(Task $task)
     {
-
+        if (!$this->isGranted('TASK_DELETE', $task)) {
+            
+            $this->addFlash('success', sprintf('La tâche %s a bien été supprimée.', $task->getTitle()));
+            return $this->redirectToRoute('task_list');
+        }
+        
+        $this->addFlash('error', sprintf('La tâche %s n\'a pas été supprimée.', $task->getTitle()));
         return $this->redirectToRoute('task_list');
     }
 
