@@ -50,7 +50,7 @@ class UserController extends AbstractController
                 )
             );
 
-            //Toto : g70Y*%ZH!bK5E3r1
+            //Toto : 9g7DyjDEv3
             //Anonyme : Sans
             //user1 : d4W2Q$PR#2sH$D7v
 
