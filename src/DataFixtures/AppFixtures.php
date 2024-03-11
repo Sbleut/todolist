@@ -23,13 +23,11 @@ class AppFixtures extends Fixture
         // utilisateur spécifique UserName : 'Anonyme'
         $user = UserFactory::createOne([
             'email' => 'anonym@.com',
-            'password' => 'password',
+            'password' => '$2y$13$2mdoEUC2eiMVAwrd.uks4uMGhu7Ug6MNSda2cj0ykd2JFVD4q4Aem',
             'roles' => ["ROLE_USER"],
             'username' => 'Anonyme',
 
         ]);
-
-        // $user->setPassword($this->hasher->hashPassword($user, $user->getPassword()));
 
 
 

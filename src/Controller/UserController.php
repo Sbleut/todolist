@@ -11,13 +11,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class UserController extends AbstractController
 {
     #[Route('/users', name: 'user_list')]
     public function listUser( UserRepository $userRepository): Response
     {
+        if (!$this->isGranted('USER_VIEW')){
+            $this->addFlash('error', sprintf('Vous ne pouvez pas accéder à la liste des utilisateurs.'));
+            return $this->redirectToRoute('app_home');
+        }
         $userList = $userRepository->findAll();
         return $this->render('user/list.html.twig', [
             'controller_name' => 'UserController',
@@ -69,13 +73,15 @@ class UserController extends AbstractController
 
     #[Route('/user/{id}/edit', name: 'user_edit')]
     /**
-     * Register function allows to create a new user with unique identifier, a hashed password, a verified email.
+     * Undocumented function
      *
-     * @param Request $request Stores data from form.
-     * @param UserPasswordHasherInterface $userPasswordHasher Tool for hashing password.
-     * @param EntityManagerInterface $entityManager Tool to push data to bdd.
+     * @param User $user
+     * @param Request $request
+     * @param UserPasswordHasherInterface $userPasswordHasher
+     * @param EntityManagerInterface $entityManager
      * @return Response
      */
+    #[IsGranted('ROLE_ADMIN')]
     public function editUser(User $user, Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(UserType::class, $user);
@@ -88,6 +94,7 @@ class UserController extends AbstractController
                     $form->get('password')->getData()
                 )
             );
+            $user->setRoles($form->get('roles')->getData());
 
             $entityManager->flush();
 
