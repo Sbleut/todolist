@@ -1,0 +1,20 @@
+Task:
+  Create:
+    Error: Vous ne pouvez pas créer de tâche, vous n\'êtes pas connecté.
+    Success: La tâche a été bien été ajoutée.
+  Edit:
+    Error: Vous ne pouvez pas modifier la tâche %task%.
+    Success: La tâche  %task% a bien été modifiée.
+  isDone: La tâche a bien été marquée comme "faite".
+  isUndone: La tâche a bien été marqué comme "à faire"
+  Delete:
+    Error: La tâche %task% n\'a pas été supprimée.
+    Success: La tâche %task% a bien été supprimée.
+User:
+  View:
+    Error: Vous ne pouvez pas accéder à la liste des utilisateurs.
+  Create:
+    Success: L'utilisateur a bien été ajouté.
+  Edit:
+    Error: Vous ne pouvez pas modifier cet utilisateur.
+    Success: L'utilisateur a bien été modifié.

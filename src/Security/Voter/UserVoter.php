@@ -2,24 +2,18 @@
 
 namespace App\Security\Voter;
 
-use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class TaskVoter extends Voter
+class UserVoter extends Voter
 {
-    public const EDIT = 'TASK_EDIT';
-    public const CREATE = 'TASK_CREATE';
-    public const VIEW = 'POST_VIEW';
-    public const DELETE = 'TASK_DELETE';
+    public const EDIT = 'USER_EDIT';
+    public const VIEW = 'USER_VIEW';
 
-    private function isAuthorOrAdmin(mixed $subject, UserInterface $user): bool
+    private function isAdmin(mixed $subject, UserInterface $user): bool
     {
-        if ($subject->getAuthor()->getUsername() === 'Anonyme' && in_array('ROLE_ADMIN',$user->getRoles())) {
-            return true;
-        }
-        if ($subject->getAuthor() === $user) {
+        if (in_array('ROLE_ADMIN',$user->getRoles())) {
             return true;
         }
         return false;
@@ -29,8 +23,8 @@ class TaskVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::EDIT, self::VIEW, self::CREATE, self::DELETE])
-            && $subject instanceof \App\Entity\Task;
+        return in_array($attribute, [self::EDIT, self::VIEW])
+            && $subject instanceof \App\Entity\User;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -44,23 +38,15 @@ class TaskVoter extends Voter
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case self::EDIT:
-                return $this->isAuthorOrAdmin($subject, $user);
                 // logic to determine if the user can EDIT
-                // return true or false
+                return $this->isAdmin($subject, $user);
                 break;
             case self::VIEW:
                 // logic to determine if the user can VIEW
-                // return true or false
-                break;
-            case self::DELETE:
-                return $this->isAuthorOrAdmin($subject, $user);
-                break;
-            case self::CREATE:
-                return true;
+                return $this->isAdmin($subject, $user);
                 break;
         }
 
         return false;
     }
-
 }
