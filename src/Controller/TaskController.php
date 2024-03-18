@@ -5,16 +5,14 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Form\TaskType as FormTaskType;
 use App\Repository\TaskRepository;
-use AppBundle\Form\TaskType;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\ExpressionLanguage\Expression;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TaskController extends AbstractController
 {
@@ -50,11 +48,11 @@ class TaskController extends AbstractController
      * @return Response A response containing the form to create a task or a redirect   response to the task list.
      */
     #[Route('/tasks/create', name: "task_create")]
-    public function createAction(Request $request, EntityManagerInterface $entityManager, Security $security)
+    public function createAction(Request $request, EntityManagerInterface $entityManager, Security $security, TranslatorInterface $translator)
     {
         $task = new Task();
         if (!$this->isGranted('TASK_CREATE', $task)) {
-            $this->addFlash('error', 'Task.Create.Error');
+            $this->addFlash('error', $translator->trans('Task.Create.Error'));
             return $this->redirectToRoute('task_list');
         }
         $form = $this->createForm(FormTaskType::class, $task);
@@ -67,7 +65,7 @@ class TaskController extends AbstractController
             $entityManager->persist($task);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Task.Create.Success');
+            $this->addFlash('success', $translator->trans('Task.Create.Success'));
 
             return $this->redirectToRoute('task_list');
         }
@@ -90,13 +88,13 @@ class TaskController extends AbstractController
      * @return Response A response containing the form to edit the task or a redirect   response to the task list.
      */
     #[Route('/tasks/{id}/edit', name: "task_edit")]
-    public function editAction(Task $task, Request $request, EntityManagerInterface $entityManager)
+    public function editAction(Task $task, Request $request, EntityManagerInterface $entityManager, TranslatorInterface $translator)
     {
         if (!$this->isGranted('TASK_EDIT', $task)) {
-            $this->addFlash('error', sprintf('Task.Edit.Error', $task->getTitle()));
+            $this->addFlash('error', $translator->trans('Task.Edit.Error', ['%task%' => $task->getTitle()], 'messages'));
             return $this->redirectToRoute('task_list');
         }
-        $form = $this->createForm(TaskType::class, $task);
+        $form = $this->createForm(FormTaskType::class, $task);
 
         $form->handleRequest($request);
 
@@ -104,7 +102,7 @@ class TaskController extends AbstractController
             $entityManager->persist($task);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Task.Edit.Success');
+            $this->addFlash('success', $translator->trans('Task.Edit.Success', ['%task%' => $task->getTitle()], 'messages'));
 
             return $this->redirectToRoute('task_list');
         }
@@ -126,16 +124,16 @@ class TaskController extends AbstractController
      * @return RedirectResponse A redirect response to the task list.
      */
     #[Route('/tasks/{id}/toggle', name: "task_toggle")]
-    public function toggleTaskAction(Task $task, EntityManagerInterface $entityManager)
+    public function toggleTaskAction(Task $task, EntityManagerInterface $entityManager, TranslatorInterface $translator)
     {
         $task->setIsDone(!$task->isIsDone());
         
         $entityManager->persist($task);
         $entityManager->flush();
         if ($task->isIsDone()) {
-            $this->addFlash('success', sprintf('Task.isDone' ));
+            $this->addFlash('success', $translator->trans('Task.isDone' ));
         } else {
-            $this->addFlash('success', sprintf('Task.isUndone.Success' ));
+            $this->addFlash('success', $translator->trans('Task.isUndone.Success' ));
         }
         
 
@@ -154,11 +152,12 @@ class TaskController extends AbstractController
      * @return RedirectResponse A redirect response to the task list.
      */
     #[Route('/tasks/{id}/delete', name: "task_delete")]
-    public function deleteTaskAction(Task $task, EntityManagerInterface $entityManager)
+    public function deleteTaskAction(Task $task, EntityManagerInterface $entityManager, TranslatorInterface $translator)
     {
+
         if (!$this->isGranted('TASK_DELETE', $task)) {
             
-            $this->addFlash('error', sprintf('La tâche %s n\'a pas été supprimée.', $task->getTitle()));
+            $this->addFlash('error', $translator->trans('La tâche %s n\'a pas été supprimée.', $task->getTitle()));
             return $this->redirectToRoute('task_list');
         }
         

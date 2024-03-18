@@ -2,6 +2,7 @@
 
 namespace App\Security\Voter;
 
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -12,6 +13,17 @@ class TaskVoter extends Voter
     public const CREATE = 'TASK_CREATE';
     public const VIEW = 'POST_VIEW';
     public const DELETE = 'TASK_DELETE';
+
+    private function isAuthorOrAdmin(mixed $subject, UserInterface $user): bool
+    {
+        if ($subject->getAuthor()->getUsername() === 'Anonyme' && in_array('ROLE_ADMIN',$user->getRoles())) {
+            return true;
+        }
+        if ($subject->getAuthor() === $user) {
+            return true;
+        }
+        return false;
+    }
 
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -32,13 +44,7 @@ class TaskVoter extends Voter
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case self::EDIT:
-                if ($subject->getAuthor() === 'Anonyme' && in_array('ROLE_ADMIN',$user->getRoles())) {
-                    return true;
-                }
-                if ($subject->getAuthor() === $user) {
-                    return true;
-                } 
-                return false;
+                return $this->isAuthorOrAdmin($subject, $user);
                 // logic to determine if the user can EDIT
                 // return true or false
                 break;
@@ -47,7 +53,7 @@ class TaskVoter extends Voter
                 // return true or false
                 break;
             case self::DELETE:
-                return $subject->getAuthor() === $user;
+                return $this->isAuthorOrAdmin($subject, $user);
                 break;
             case self::CREATE:
                 return true;
@@ -56,4 +62,5 @@ class TaskVoter extends Voter
 
         return false;
     }
+
 }

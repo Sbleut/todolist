@@ -11,6 +11,14 @@ class UserVoter extends Voter
     public const EDIT = 'POST_EDIT';
     public const VIEW = 'USER_VIEW';
 
+    private function isAdmin(mixed $subject, UserInterface $user): bool
+    {
+        if (in_array('ROLE_ADMIN',$user->getRoles())) {
+            return true;
+        }
+        return false;
+    }
+
     protected function supports(string $attribute, mixed $subject): bool
     {
         // replace with your own logic
@@ -31,14 +39,11 @@ class UserVoter extends Voter
         switch ($attribute) {
             case self::EDIT:
                 // logic to determine if the user can EDIT
-                // return true or false
+                return $this->isAdmin($subject, $user);
                 break;
             case self::VIEW:
                 // logic to determine if the user can VIEW
-                if (in_array('ROLE_ADMIN',$user->getRoles())) {
-                    return true;
-                }
-                return false;
+                return $this->isAdmin($subject, $user);
                 break;
         }
 

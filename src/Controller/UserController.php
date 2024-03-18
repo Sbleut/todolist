@@ -11,14 +11,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class UserController extends AbstractController
 {
     #[Route('/users', name: 'user_list')]
-    public function listUser( UserRepository $userRepository): Response
+    public function listUser( UserRepository $userRepository, Security $security): Response
     {
-        if (!$this->isGranted('USER_VIEW')){
+        
+        if (!$this->isGranted('USER_VIEW', $security->getUser())){
             $this->addFlash('error', sprintf('Vous ne pouvez pas accéder à la liste des utilisateurs.'));
             return $this->redirectToRoute('app_home');
         }
@@ -56,13 +59,13 @@ class UserController extends AbstractController
 
             //Toto : 9g7DyjDEv3
             //Anonyme : Sans
-            //user1 : d4W2Q$PR#2sH$D7v
+            //Admin1 : d4W2Q$PR#2sH$D7v
 
             $entityManager->persist($user);
             $entityManager->flush();
 
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
-            return $this->redirectToRoute('user_list');
+            return $this->redirectToRoute('app_home');
         }
 
 
@@ -81,19 +84,45 @@ class UserController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @return Response
      */
-    #[IsGranted('ROLE_ADMIN')]
-    public function editUser(User $user, Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    public function editUser(User $user, Request $request, EntityManagerInterface $entityManager, Security $security): Response
     {
-        $form = $this->createForm(UserType::class, $user);
+        if (!$this->isGranted('USER_VIEW', $security->getUser())){
+            $this->addFlash('error', sprintf('Vous ne pouvez pas accéder à la liste des utilisateurs.'));
+            return $this->redirectToRoute('app_home');
+        }
+
+        $form = $this->createFormBuilder($user)
+            ->add('email')
+            ->add('roles', ChoiceType::class, [
+                'label' => "Choisir le role de l'utilisateur",
+                'required' => true,
+                'multiple' => false,
+                'expanded' => false,
+                'choices'  => [
+                    'Utilisateur' => 'ROLE_USER',
+                    'Admin' => 'ROLE_ADMIN',
+                ],
+                'data' => ['ROLE_USER']
+            ])
+            ->add('username')
+            ->get('roles')
+            ->addModelTransformer(new CallbackTransformer(
+                function ($rolesArray) {
+                    // transform the array to a string
+                    return count($rolesArray)? $rolesArray[0]: null;
+                },
+                function ($rolesString) {
+                    // transform the string back to an array
+                    return [$rolesString];
+                }
+            ))
+            ->get('email')
+            ->get('username')
+            ->getForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('password')->getData()
-                )
-            );
+            dd($form);
             $user->setRoles($form->get('roles')->getData());
 
             $entityManager->flush();
