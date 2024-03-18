@@ -10,4 +10,11 @@ Task:
   Delete:
     Error: La tâche %task% n\'a pas été supprimée.
     Success: La tâche %task% a bien été supprimée.
-  
+User:
+  View:
+    Error: Vous ne pouvez pas accéder à la liste des utilisateurs.
+  Create:
+    Success: L'utilisateur a bien été ajouté.
+  Edit:
+    Error: Vous ne pouvez pas modifier cet utilisateur.
+    Success: L'utilisateur a bien été modifié.

@@ -12,17 +12,28 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\Form\CallbackTransformer;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserController extends AbstractController
 {
     #[Route('/users', name: 'user_list')]
-    public function listUser( UserRepository $userRepository, Security $security): Response
+    /**
+    * Lists all users.
+    *
+    * This function retrieves a list of all users and renders them in a template for display.
+    * Before displaying the list, it checks whether the current user has permission to view users.
+    * If the current user does not have permission, an error flash message is added and the user is redirected to the home page.
+    * If the current user has permission, the list of users is retrieved from the UserRepository and passed to the template for rendering.
+    *
+    * @param UserRepository $userRepository The repository for user entities.
+    * @param Security $security The security component for checking user permissions.
+    * @return Response A response containing the rendered list of users.
+    */
+    public function listUser( UserRepository $userRepository, Security $security, TranslatorInterface $translator): Response
     {
         
         if (!$this->isGranted('USER_VIEW', $security->getUser())){
-            $this->addFlash('error', sprintf('Vous ne pouvez pas accéder à la liste des utilisateurs.'));
+            $this->addFlash('error', $translator->trans('User.View.Error', [], 'messages'));
             return $this->redirectToRoute('app_home');
         }
         $userList = $userRepository->findAll();
@@ -41,7 +52,7 @@ class UserController extends AbstractController
      * @param EntityManagerInterface $entityManager Tool to push data to bdd.
      * @return Response
      */
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -64,7 +75,7 @@ class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $this->addFlash('success', "L'utilisateur a bien été ajouté.");
+            $this->addFlash('success', $translator->trans('User.Create.Success', [], 'messages'));
             return $this->redirectToRoute('app_home');
         }
 
@@ -84,50 +95,23 @@ class UserController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @return Response
      */
-    public function editUser(User $user, Request $request, EntityManagerInterface $entityManager, Security $security): Response
+    public function editUser(User $user, Request $request, EntityManagerInterface $entityManager, Security $security, TranslatorInterface $translator): Response
     {
-        if (!$this->isGranted('USER_VIEW', $security->getUser())){
-            $this->addFlash('error', sprintf('Vous ne pouvez pas accéder à la liste des utilisateurs.'));
+        if (!$this->isGranted('USER_EDIT', $security->getUser())){
+            $this->addFlash('error', $translator->trans('User.Edit.Error', [], 'messages'));
             return $this->redirectToRoute('app_home');
         }
 
-        $form = $this->createFormBuilder($user)
-            ->add('email')
-            ->add('roles', ChoiceType::class, [
-                'label' => "Choisir le role de l'utilisateur",
-                'required' => true,
-                'multiple' => false,
-                'expanded' => false,
-                'choices'  => [
-                    'Utilisateur' => 'ROLE_USER',
-                    'Admin' => 'ROLE_ADMIN',
-                ],
-                'data' => ['ROLE_USER']
-            ])
-            ->add('username')
-            ->get('roles')
-            ->addModelTransformer(new CallbackTransformer(
-                function ($rolesArray) {
-                    // transform the array to a string
-                    return count($rolesArray)? $rolesArray[0]: null;
-                },
-                function ($rolesString) {
-                    // transform the string back to an array
-                    return [$rolesString];
-                }
-            ))
-            ->get('email')
-            ->get('username')
-            ->getForm();
+        $form = $this->createForm(UserType::class, $user)
+            ->remove('password');
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            dd($form);
             $user->setRoles($form->get('roles')->getData());
 
             $entityManager->flush();
 
-            $this->addFlash('success', "L'utilisateur a bien été modifié");
+            $this->addFlash('success',  $translator->trans('User.Edit.Success', [], 'messages'));
 
             return $this->redirectToRoute('user_list');
         }

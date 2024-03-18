@@ -8,7 +8,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserVoter extends Voter
 {
-    public const EDIT = 'POST_EDIT';
+    public const EDIT = 'USER_EDIT';
     public const VIEW = 'USER_VIEW';
 
     private function isAdmin(mixed $subject, UserInterface $user): bool
