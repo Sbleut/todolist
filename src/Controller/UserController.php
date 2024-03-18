@@ -16,7 +16,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserController extends AbstractController
 {
-    #[Route('/users', name: 'user_list')]
     /**
     * Lists all users.
     *
@@ -29,6 +28,7 @@ class UserController extends AbstractController
     * @param Security $security The security component for checking user permissions.
     * @return Response A response containing the rendered list of users.
     */
+    #[Route('/users', name: 'user_list')]
     public function listUser( UserRepository $userRepository, Security $security, TranslatorInterface $translator): Response
     {
         
@@ -43,7 +43,6 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/users/create', name: 'user_create')]
     /**
      * Register function allows to create a new user with unique identifier, a hashed password, a verified email.
      *
@@ -52,6 +51,7 @@ class UserController extends AbstractController
      * @param EntityManagerInterface $entityManager Tool to push data to bdd.
      * @return Response
      */
+    #[Route('/users/create', name: 'user_create')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         $user = new User();
@@ -85,16 +85,24 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/user/{id}/edit', name: 'user_edit')]
     /**
-     * Undocumented function
+     * Edit a user.
      *
-     * @param User $user
-     * @param Request $request
-     * @param UserPasswordHasherInterface $userPasswordHasher
-     * @param EntityManagerInterface $entityManager
-     * @return Response
+     * This function handles the editing of a user entity based on the provided user object.
+     * Before allowing the user to edit, it checks whether the current user has permission to edit users.
+     * If the current user does not have permission, an error flash message is added and the user is redirected to the home page.
+     * If the current user has permission, a form is created using the UserType form type, removing the password field for security reasons.
+     * The user entity is then updated based on the submitted form data.
+     * After successfully updating the user entity, a success flash message is added and the user is redirected to the list of users.
+     *
+     * @param User $user The user entity to be edited.
+     * @param Request $request The request object containing the form data.
+     * @param EntityManagerInterface $entityManager The entity manager for persisting changes.
+     * @param Security $security The security component for checking user permissions.
+     * @param TranslatorInterface $translator The translator for translating flash messages.
+     * @return Response A response containing the form for editing the user.
      */
+    #[Route('/user/{id}/edit', name: 'user_edit')]
     public function editUser(User $user, Request $request, EntityManagerInterface $entityManager, Security $security, TranslatorInterface $translator): Response
     {
         if (!$this->isGranted('USER_EDIT', $security->getUser())){

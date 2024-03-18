@@ -52,7 +52,7 @@ class TaskController extends AbstractController
     {
         $task = new Task();
         if (!$this->isGranted('TASK_CREATE', $task)) {
-            $this->addFlash('error', $translator->trans('Task.Create.Error'));
+            $this->addFlash('error', $translator->trans('Task.Create.Error', [], 'messages'));
             return $this->redirectToRoute('task_list');
         }
         $form = $this->createForm(FormTaskType::class, $task);
@@ -65,7 +65,7 @@ class TaskController extends AbstractController
             $entityManager->persist($task);
             $entityManager->flush();
 
-            $this->addFlash('success', $translator->trans('Task.Create.Success'));
+            $this->addFlash('success', $translator->trans('Task.Create.Success', [], 'messages'));
 
             return $this->redirectToRoute('task_list');
         }
@@ -131,9 +131,9 @@ class TaskController extends AbstractController
         $entityManager->persist($task);
         $entityManager->flush();
         if ($task->isIsDone()) {
-            $this->addFlash('success', $translator->trans('Task.isDone' ));
+            $this->addFlash('success', $translator->trans('Task.isDone', [], 'messages' ));
         } else {
-            $this->addFlash('success', $translator->trans('Task.isUndone.Success' ));
+            $this->addFlash('success', $translator->trans('Task.isUndone.Success', [], 'messages' ));
         }
         
 
@@ -157,14 +157,14 @@ class TaskController extends AbstractController
 
         if (!$this->isGranted('TASK_DELETE', $task)) {
             
-            $this->addFlash('error', $translator->trans('La tâche %s n\'a pas été supprimée.', $task->getTitle()));
+            $this->addFlash('error', $translator->trans('Task.Delete.Error', ['%task%' => $task->getTitle()], 'messages' ));
             return $this->redirectToRoute('task_list');
         }
         
         $entityManager->remove($task);
         $entityManager->flush();
 
-        $this->addFlash('success', sprintf('La tâche %s a bien été supprimée.', $task->getTitle()));
+        $this->addFlash('success', $translator->trans('Task.Delete.Success', ['%task%' => $task->getTitle()],'messages'));
         return $this->redirectToRoute('task_list');
     }
 

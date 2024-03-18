@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -30,9 +31,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 8)]
+    #[
+        Assert\PasswordStrength([
+            'minScore'  => PasswordStrength::STRENGTH_MEDIUM,
+            'message'   => 'Password.Tooweak',
+        ])
+    ]
     private ?string $password = null;
 
     #[ORM\Column(length: 25)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 8)]
     private ?string $username = null;
 
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'author')]
