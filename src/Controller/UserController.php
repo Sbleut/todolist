@@ -37,6 +37,11 @@ class UserController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
         $userList = $userRepository->findAll();
+
+        // First item of the Array is Anonym therefore we remove it.
+        // If Anonym user is removed or changed modify this code.
+        unset($userList[0]);
+        
         return $this->render('user/list.html.twig', [
             'controller_name' => 'UserController',
             'users' => $userList,
