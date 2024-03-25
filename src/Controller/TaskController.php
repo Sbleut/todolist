@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TaskController extends AbstractController
@@ -26,9 +27,15 @@ class TaskController extends AbstractController
      * @return Response A response containing the rendered task list view.
      */
     #[Route('/tasks', name: 'task_list')]
-    public function index( TaskRepository $taskRepository): Response
+    public function index( TaskRepository $taskRepository, Security $security, TranslatorInterface $translator): Response
     {
-        $taskList =  $taskRepository->findAll();
+        $user = $security->getUser();
+        if (!$user instanceof UserInterface) {
+            $this->addFlash('error', $translator->trans('Task.View.Error', [], 'messages'));
+            return $this->redirectToRoute('app_home');
+        }
+
+        $taskList =  $taskRepository->findByRole($user);
         return $this->render('task/list.html.twig', [
             'controller_name' => 'TaskController',
             'tasks' => $taskList,

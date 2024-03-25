@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Task;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @extends ServiceEntityRepository<Task>
@@ -16,9 +18,26 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TaskRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private Security $security)
     {
         parent::__construct($registry, Task::class);
+
+    }
+
+    /**
+     * Find Tasks by author And add Anonym tasks for admin
+     * 
+     * @return Task[] Returns an array of Task objects
+     */
+    public function findByRole(UserInterface $user): array
+    {
+        $query = $this->createQueryBuilder('task')
+            ->setParameter('user', $user)
+            ->andwhere('task.author = :user');
+        if ($this->security->isGranted('ROLE_ADMIN')) {
+            $query->orwhere('task.author = 99');
+        }
+        return $query->getQuery()->getResult();
     }
 
 //    /**

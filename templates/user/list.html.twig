@@ -27,7 +27,8 @@
                         <td>{{ user.username }}</td>
                         <td>{{ user.email }}</td>
                         <td>
-                            <a href="{{ path('user_edit', {'id' : user.id}) }}" class="btn btn-success btn-sm">Edit</a>
+                            <a href="{{ path('user_role_user', {'id' : user.id}) }}" class="btn btn-success btn-sm">User</a>
+                            <a href="{{ path('user_role_admin', {'id' : user.id}) }}" class="btn btn-danger btn-sm">Admin</a>
                         </td>
                     </tr>
                 {% endfor %}
