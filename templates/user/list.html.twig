@@ -27,7 +27,18 @@
                         <td>{{ user.username }}</td>
                         <td>{{ user.email }}</td>
                         <td>
-                            <a href="{{ path('user_edit', {'id' : user.id}) }}" class="btn btn-success btn-sm">Edit</a>
+                            {% set roleUser = "user" %}
+                            {% for role in user.roles %}
+                                {% if role == "ROLE_ADMIN" %}
+                                    {% set roleUser = "admin" %}
+                                {% endif %}
+                            {% endfor %}
+                            {% if roleUser ==  'admin' %}
+                                <a href="{{ path('user_role_user', {'id' : user.id}) }}" class="btn btn-success btn-sm">User</a>
+                            {% elseif roleUser == 'user' %}                            
+                                <a href="{{ path('user_role_admin', {'id' : user.id}) }}" class="btn btn-danger btn-sm">Admin</a>
+                            {%endif%}
+                            
                         </td>
                     </tr>
                 {% endfor %}

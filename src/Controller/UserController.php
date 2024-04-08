@@ -16,7 +16,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserController extends AbstractController
 {
-    #[Route('/users', name: 'user_list')]
     /**
     * Lists all users.
     *
@@ -29,6 +28,7 @@ class UserController extends AbstractController
     * @param Security $security The security component for checking user permissions.
     * @return Response A response containing the rendered list of users.
     */
+    #[Route('/users', name: 'user_list')]
     public function listUser( UserRepository $userRepository, Security $security, TranslatorInterface $translator): Response
     {
         
@@ -37,13 +37,17 @@ class UserController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
         $userList = $userRepository->findAll();
+
+        // First item of the Array is Anonym therefore we remove it.
+        // If Anonym user is removed or changed modify this code.
+        unset($userList[0]);
+        
         return $this->render('user/list.html.twig', [
             'controller_name' => 'UserController',
             'users' => $userList,
         ]);
     }
 
-    #[Route('/users/create', name: 'user_create')]
     /**
      * Register function allows to create a new user with unique identifier, a hashed password, a verified email.
      *
@@ -52,6 +56,7 @@ class UserController extends AbstractController
      * @param EntityManagerInterface $entityManager Tool to push data to bdd.
      * @return Response
      */
+    #[Route('/users/create', name: 'user_create')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         $user = new User();
@@ -74,27 +79,33 @@ class UserController extends AbstractController
 
             $entityManager->persist($user);
             $entityManager->flush();
-
             $this->addFlash('success', $translator->trans('User.Create.Success', [], 'messages'));
             return $this->redirectToRoute('app_home');
         }
-
 
         return $this->render('user/create.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
-    #[Route('/user/{id}/edit', name: 'user_edit')]
     /**
-     * Undocumented function
+     * Edit a user.
      *
-     * @param User $user
-     * @param Request $request
-     * @param UserPasswordHasherInterface $userPasswordHasher
-     * @param EntityManagerInterface $entityManager
-     * @return Response
+     * This function handles the editing of a user entity based on the provided user object.
+     * Before allowing the user to edit, it checks whether the current user has permission to edit users.
+     * If the current user does not have permission, an error flash message is added and the user is redirected to the home page.
+     * If the current user has permission, a form is created using the UserType form type, removing the password field for security reasons.
+     * The user entity is then updated based on the submitted form data.
+     * After successfully updating the user entity, a success flash message is added and the user is redirected to the list of users.
+     *
+     * @param User $user The user entity to be edited.
+     * @param Request $request The request object containing the form data.
+     * @param EntityManagerInterface $entityManager The entity manager for persisting changes.
+     * @param Security $security The security component for checking user permissions.
+     * @param TranslatorInterface $translator The translator for translating flash messages.
+     * @return Response A response containing the form for editing the user.
      */
+    #[Route('/user/{id}/edit', name: 'user_edit')]
     public function editUser(User $user, Request $request, EntityManagerInterface $entityManager, Security $security, TranslatorInterface $translator): Response
     {
         if (!$this->isGranted('USER_EDIT', $security->getUser())){
@@ -103,6 +114,8 @@ class UserController extends AbstractController
         }
 
         $form = $this->createForm(UserType::class, $user)
+            ->remove('email')
+            ->remove('username')
             ->remove('password');
         $form->handleRequest($request);
 
@@ -120,6 +133,56 @@ class UserController extends AbstractController
             'form' => $form->createView(),
             'user' => $user,
         ]);
+    }
+
+    /**
+     * Edit a user.
+     *
+     * This function handles the editing of a user entity based on the provided user object.
+     * Before allowing the user to edit, it checks whether the current user has permission to edit users.
+     * If the current user does not have permission, an error flash message is added and the user is redirected to the home page.
+     * If the current user has permission, a form is created using the UserType form type, removing the password field for security reasons.
+     * The user entity is then updated based on the submitted form data.
+     * After successfully updating the user entity, a success flash message is added and the user is redirected to the list of users.
+     *
+     * @param User $user The user entity to be edited.
+     * @param Request $request The request object containing the form data.
+     * @param EntityManagerInterface $entityManager The entity manager for persisting changes.
+     * @param Security $security The security component for checking user permissions.
+     * @param TranslatorInterface $translator The translator for translating flash messages.
+     * @return Response A response containing the form for editing the user.
+     */
+    #[Route('/user/{id}/role/admin', name: 'user_role_admin')]
+    public function switchToAdmin(User $user, Request $request, EntityManagerInterface $entityManager, Security $security, TranslatorInterface $translator): Response
+    {
+        if (!$this->isGranted('USER_EDIT', $security->getUser())){
+            $this->addFlash('error', $translator->trans('User.Edit.Error', [], 'messages'));
+            return $this->redirectToRoute('app_home');
+        }
+        $user->setRoles(['ROLE_ADMIN']);
+        $entityManager->flush();
+        $this->addFlash('success',  $translator->trans('User.Edit.Success', [], 'messages'));
+        return $this->redirectToRoute('user_list');
+    }
+
+    /**
+     */
+    #[Route('/user/{id}/role/user', name: 'user_role_user')]
+    public function switchToUser(User $user, Request $request, EntityManagerInterface $entityManager, Security $security, TranslatorInterface $translator): Response
+    {
+        if (!$this->isGranted('USER_EDIT', $security->getUser())){
+            $this->addFlash('error', $translator->trans('User.Edit.Error', [], 'messages'));
+            return $this->redirectToRoute('app_home');
+        }
+
+        $user->setRoles(['ROLE_USER']);
+
+        $entityManager->flush();
+
+        $this->addFlash('success',  $translator->trans('User.Edit.Success', [], 'messages'));
+
+        return $this->redirectToRoute('user_list');
+
     }
 
 }

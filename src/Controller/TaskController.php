@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TaskController extends AbstractController
@@ -26,9 +27,15 @@ class TaskController extends AbstractController
      * @return Response A response containing the rendered task list view.
      */
     #[Route('/tasks', name: 'task_list')]
-    public function index( TaskRepository $taskRepository): Response
+    public function index( TaskRepository $taskRepository, Security $security, TranslatorInterface $translator): Response
     {
-        $taskList =  $taskRepository->findAll();
+        $user = $security->getUser();
+        if (!$user instanceof UserInterface) {
+            $this->addFlash('error', $translator->trans('Task.View.Error', [], 'messages'));
+            return $this->redirectToRoute('app_home');
+        }
+
+        $taskList =  $taskRepository->findByRole($user);
         return $this->render('task/list.html.twig', [
             'controller_name' => 'TaskController',
             'tasks' => $taskList,
@@ -52,7 +59,7 @@ class TaskController extends AbstractController
     {
         $task = new Task();
         if (!$this->isGranted('TASK_CREATE', $task)) {
-            $this->addFlash('error', $translator->trans('Task.Create.Error'));
+            $this->addFlash('error', $translator->trans('Task.Create.Error', [], 'messages'));
             return $this->redirectToRoute('task_list');
         }
         $form = $this->createForm(FormTaskType::class, $task);
@@ -65,7 +72,7 @@ class TaskController extends AbstractController
             $entityManager->persist($task);
             $entityManager->flush();
 
-            $this->addFlash('success', $translator->trans('Task.Create.Success'));
+            $this->addFlash('success', $translator->trans('Task.Create.Success', [], 'messages'));
 
             return $this->redirectToRoute('task_list');
         }
@@ -131,9 +138,9 @@ class TaskController extends AbstractController
         $entityManager->persist($task);
         $entityManager->flush();
         if ($task->isIsDone()) {
-            $this->addFlash('success', $translator->trans('Task.isDone' ));
+            $this->addFlash('success', $translator->trans('Task.isDone', [], 'messages' ));
         } else {
-            $this->addFlash('success', $translator->trans('Task.isUndone.Success' ));
+            $this->addFlash('success', $translator->trans('Task.isUndone.Success', [], 'messages' ));
         }
         
 
@@ -157,14 +164,14 @@ class TaskController extends AbstractController
 
         if (!$this->isGranted('TASK_DELETE', $task)) {
             
-            $this->addFlash('error', $translator->trans('La tâche %s n\'a pas été supprimée.', $task->getTitle()));
+            $this->addFlash('error', $translator->trans('Task.Delete.Error', ['%task%' => $task->getTitle()], 'messages' ));
             return $this->redirectToRoute('task_list');
         }
         
         $entityManager->remove($task);
         $entityManager->flush();
 
-        $this->addFlash('success', sprintf('La tâche %s a bien été supprimée.', $task->getTitle()));
+        $this->addFlash('success', $translator->trans('Task.Delete.Success', ['%task%' => $task->getTitle()],'messages'));
         return $this->redirectToRoute('task_list');
     }
 

@@ -6,12 +6,13 @@ ToDoList
 Base du projet #8 : Améliorez un projet existant
 
 Améliorations :
-
- - Chaque USER voient ces propres tâches
- - Les admins peuvent créer des groupes d'utilisateurs
- - Chaque USER voient également les tâches de son groupe.
- - Les admins peuvent assignés des tâches aux USER
- - Dictionnaire du site fr
- - Nouveau ROLE_MANAGER 
+ - Maître Mot Simplicité.
+ - Navbar Correct avec multi accès.
+ - Status des tâches (clarification terminée, non-terminée, Anonyme).
+ - Dashboard des tâches plus claires.
+ - Date de création de la tâches.
+ - Date de fin sur une tâche.
+ - UX Design de meilleure Facture.
+ - Dictionnaire du site fr.
 
 https://openclassrooms.com/projects/ameliorer-un-projet-existant-1
