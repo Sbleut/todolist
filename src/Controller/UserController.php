@@ -79,11 +79,9 @@ class UserController extends AbstractController
 
             $entityManager->persist($user);
             $entityManager->flush();
-
             $this->addFlash('success', $translator->trans('User.Create.Success', [], 'messages'));
             return $this->redirectToRoute('app_home');
         }
-
 
         return $this->render('user/create.html.twig', [
             'form' => $form->createView(),

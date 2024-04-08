@@ -18,13 +18,8 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('username', TextType::class, [
-                'label' => 'Pseudo',
-            ]
-            )
-            ->add('email', EmailType::class, [
-                'label' => 'Email',
-            ])
+            ->add('username')
+            ->add('email')
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'PasswordMissmatch',
@@ -45,7 +40,7 @@ class UserType extends AbstractType
             ]);
 
         $builder->get('roles')
-        ->addModelTransformer(new CallbackTransformer(
+            ->addModelTransformer(new CallbackTransformer(
             function ($rolesArray) {
                 // transform the array to a string
                 return count($rolesArray)? $rolesArray[0]: null;

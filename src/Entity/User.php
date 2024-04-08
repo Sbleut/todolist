@@ -43,7 +43,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 25)]
     #[Assert\NotBlank]
-    #[Assert\Length(min: 8)]
+    #[Assert\Length(min: 3)]
     private ?string $username = null;
 
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'author')]

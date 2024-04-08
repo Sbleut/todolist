@@ -1,8 +1,8 @@
 Task:
   View:
-    Error: Vous ne pouvez pas voir vos tâches, vous n\'êtes pas connecté.
+    Error: Vous ne pouvez pas voir vos tâches, vous n'êtes pas connecté.
   Create:
-    Error: Vous ne pouvez pas créer de tâche, vous n\'êtes pas connecté.
+    Error: Vous ne pouvez pas créer de tâche, vous n'êtes pas connecté.
     Success: La tâche a été bien été ajoutée.
   Edit:
     Error: Vous ne pouvez pas modifier la tâche %task%.
@@ -10,13 +10,22 @@ Task:
   isDone: La tâche a bien été marquée comme "faite".
   isUndone: La tâche a bien été marqué comme "à faire"
   Delete:
-    Error: La tâche %task% n\'a pas été supprimée.
+    Error: Vous ne pouvez pas effectuer cette action.
     Success: La tâche %task% a bien été supprimée.
 User:
   View:
     Error: Vous ne pouvez pas accéder à la liste des utilisateurs.
   Create:
+    Error: La création a échoué.
     Success: L'utilisateur a bien été ajouté.
   Edit:
     Error: Vous ne pouvez pas modifier cet utilisateur.
     Success: L'utilisateur a bien été modifié.
+Login:
+  Title: Connectez-vous!
+  As: Vous êtes connectez en tant que 
+  Logout: Déconnectez-vous
+  H1: Connectez-vous !
+  Email : Email
+  Password: Mot de passe
+  Sign: Se connecter

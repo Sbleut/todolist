@@ -12,10 +12,12 @@
 		</title>
 		<link
 		rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/TR/2008/REC-xml-20081126/' viewBox='0 0 128 128'><text y='1.2em' font-size='96'>⚫️</text><text y='1.3em' x='0.2em' font-size='76' fill='#fff'>sf</text></svg>">
-
 		<!-- Bootstrap Core CSS -->
-		<link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet"> {% block stylesheets %}{% endblock %}
-
+		<link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+		<!-- Custom CSS -->
+		<link href="{{ asset('css/shop-homepage.css')}}" rel="stylesheet">
+		{% block stylesheets %}{% endblock %}
+		
 		{% block javascripts %}
 			{% block importmap %}
 				{{ importmap('app') }}
@@ -27,27 +29,28 @@
 			<div class="container">
 				<div class="navbar-header">
 					<a class="navbar-brand" href="#">To Do List app</a>
-
 					<img src="{{ asset('img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms"/>
 				</div>
 				<div class="d-flex ">
 					<a href="{{ path('user_create') }}" class="btn btn-primary sm m-1">Créer un utilisateur</a>
 
 					{% if app.user %}
+						<a href="{{ path('task_create') }}" class="pull-right sm m-1">Créer une tâche</a>
+						<a href="{{ path('task_list') }}" class="pull-right sm m-1">Liste de vos tâches</a>
 						<a href="{{ path('app_logout') }}" class="pull-right btn btn-danger sm m-1">Se déconnecter</a>
 					{% endif %}
 
 					{% if not app.user and 'login' != app.request.attributes.get('_route') %}
 						<a href="{{ path('app_login') }}" class="btn btn-success sm m-1">Se connecter</a>
 					{% endif %}
+
+
 				</div>
 			</div>
 		</nav>
 		<div class="container">
-
-
 			<div class="row">
-				<div class="col-md-12">
+				<div class="d-flex justify-content-center align-items-center">
 					{% for flash_message in app.session.flashBag.get('success') %}
 						<div class="alert alert-success" role="alert">
 							<strong>Superbe !</strong>
@@ -63,7 +66,8 @@
 					{% endfor %}
 
 					{% block header_title %}{% endblock %}
-					{% block header_img %}<img class="slide-image" src="{{ asset('img/todolist_homepage.jpg') }}" alt="todo list">
+					{% block header_img %}
+						<img class="img-fluid" src="{{ asset('img/todolist_homepage.jpg') }}" alt="todo list">
 					{% endblock %}
 				</div>
 			</div>

@@ -1,4 +1,7 @@
 {% extends 'base.html.twig' %}
+{% block stylesheets %}
+<link href="{{ asset('css/form.css') }}" rel="stylesheet">
+{% endblock %}
 
 {% block header_title %}
 	<h1 class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4 ">Création du compte</h1>
@@ -6,14 +9,11 @@
 {% block header_img %}{% endblock %}
 
 {% block body %}
-	<section class="vh-100" >
-        
-		<div class="d-flex justify-content-center">
-			
+	<section class="vh-100" >        
+		<div class="d-flex justify-content-center">			
 			{{ form_start(form, {'action' : path('user_create')}) }}
 			{{ form_widget(form) }}
-
-			<button type="submit" class="btn btn-success pull-right mt-2">Ajouter</button>
+			<button type="submit" class="btn btn-success pull-right mt-2">Enregistrer</button>
 			{{ form_end(form) }}
 		</div>
 	</section>
