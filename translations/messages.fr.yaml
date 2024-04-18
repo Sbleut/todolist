@@ -1,7 +1,18 @@
 Task:
+  List:
+    Title: Listes de vos tâches en cours
+    Create: Créer une tâche
+    Todo: A faire
+    Done: Terminée
+    None: Il n'y a pas encore de tâche enregistrée.
+    First: Créer votre première tâche
   View:
     Error: Vous ne pouvez pas voir vos tâches, vous n'êtes pas connecté.
   Create:
+    Title: Titre
+    Add: Ajouter
+    Content: Description de la tâche
+    Return: Retour à la liste des tâches
     Error: Vous ne pouvez pas créer de tâche, vous n'êtes pas connecté.
     Success: La tâche a été bien été ajoutée.
   Edit:

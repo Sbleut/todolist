@@ -1,13 +1,16 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="row">
+    <div class="container">
         {{ form_start(form, {'action' : path('task_create')}) }}
-            {{ form_widget(form) }}
+            {{ form_label(form.title, 'Task.Create.Title'|trans()) }}
+            {{ form_widget(form.title) }}
+            {{ form_label(form.content, 'Task.Create.Content'|trans()) }}
+            {{ form_widget(form.content) }}
 
-            <button type="submit" class="btn btn-success pull-right">Ajouter</button>
+            <button type="submit" class="btn btn-success pull-right mt-2">{{'Task.Create.Add'|trans()}}</button>
         {{ form_end(form) }}
 
-        <a href="{{ path('task_list') }}" class="btn btn-primary">Retour à la liste des tâches</a>
+        <a href="{{ path('task_list') }}" class="btn btn-primary mt-2">{{'Task.Create.Return'|trans()}}</a>
     </div>
 {% endblock %}

@@ -36,7 +36,7 @@ class TaskController extends AbstractController
         }
 
         $taskList =  $taskRepository->findByRole($user);
-        return $this->render('task/list.html.twig', [
+        return $this->render('task/list-done.html.twig', [
             'controller_name' => 'TaskController',
             'tasks' => $taskList,
         ]);
