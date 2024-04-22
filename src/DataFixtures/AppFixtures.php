@@ -29,6 +29,22 @@ class AppFixtures extends Fixture
 
         ]);
 
+        $user1 = UserFactory::createOne([
+            'email' => 'toto@gmail.com',
+            'password' => '9g7DyjDEv3',
+            'roles' => ["ROLE_USER"],
+            'username' => 'Toto',
+
+        ]);
+
+        $user2 = UserFactory::createOne([
+            'email' => 'admin1@gmail.com',
+            'password' => 'd4W2Q$PR#2sH$D7v',
+            'roles' => ["ROLE_ADMIN"],
+            'username' => 'Admin1',
+
+        ]);
+
 
 
         // Nourrir avec des infos qui vont bien. Re Hash de password. 

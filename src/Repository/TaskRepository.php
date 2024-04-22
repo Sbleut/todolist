@@ -29,11 +29,13 @@ class TaskRepository extends ServiceEntityRepository
      * 
      * @return Task[] Returns an array of Task objects
      */
-    public function findByRole(UserInterface $user): array
+    public function findByRoleAndStatus(UserInterface $user, $statu): array
     {
         $query = $this->createQueryBuilder('task')
             ->setParameter('user', $user)
-            ->andwhere('task.author = :user');
+            ->setParameter('statu', $statu)
+            ->andwhere('task.author = :user')
+            ->andwhere('task.isDone = :statu');
         if ($this->security->isGranted('ROLE_ADMIN')) {
             $query->orwhere('task.author = 99');
         }

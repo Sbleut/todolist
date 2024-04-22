@@ -13,7 +13,7 @@
 {% block body %}
 	<div class="container d-flex flex-lg-row flex-column justify-content-evenly align-items-evenly ">
 			<a href="{{ path('task_create') }}" class="btn btn-success btn-lg btn-block responsive-width mt-2">Créer une nouvelle tâche</a>
-			<a href="{{ path('task_list') }}" class="btn btn-primary btn-lg btn-block responsive-width mt-2">Liste des tâches à faire</a>
-			<a href="{{ path('task_list') }}" class="btn btn-secondary btn-lg btn-block responsive-width mt-2" >Liste des tâches terminées</a>
+			<a href="{{ path('task_list_undone') }}" class="btn btn-primary btn-lg btn-block responsive-width mt-2">Liste des tâches à faire</a>
+			<a href="{{ path('task_list_done') }}" class="btn btn-secondary btn-lg btn-block responsive-width mt-2" >Liste des tâches terminées</a>
 	</div>
 {% endblock %}

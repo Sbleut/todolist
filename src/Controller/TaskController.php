@@ -19,15 +19,15 @@ class TaskController extends AbstractController
 {
     
     /**
-     * Displays a list of tasks.
+     * Displays a list of tasks Undone.
      *
      * This function retrieves a list of all tasks from the database and renders the task list view with the obtained data.
      *
      * @param TaskRepository $taskRepository The task repository to fetch tasks from the database.
      * @return Response A response containing the rendered task list view.
      */
-    #[Route('/tasks', name: 'task_list')]
-    public function index( TaskRepository $taskRepository, Security $security, TranslatorInterface $translator): Response
+    #[Route('/tasks/undone', name: 'task_list_undone')]
+    public function listOfUndoneTasks( TaskRepository $taskRepository, Security $security, TranslatorInterface $translator): Response
     {
         $user = $security->getUser();
         if (!$user instanceof UserInterface) {
@@ -35,7 +35,31 @@ class TaskController extends AbstractController
             return $this->redirectToRoute('app_home');
         }
 
-        $taskList =  $taskRepository->findByRole($user);
+        $taskList =  $taskRepository->findByRoleAndStatus($user, false);
+        return $this->render('task/list-undone.html.twig', [
+            'controller_name' => 'TaskController',
+            'tasks' => $taskList,
+        ]);
+    }
+
+    /**
+     * Displays a list of tasks done.
+     *
+     * This function retrieves a list of all tasks from the database and renders the task list view with the obtained data.
+     *
+     * @param TaskRepository $taskRepository The task repository to fetch tasks from the database.
+     * @return Response A response containing the rendered task list view.
+     */
+    #[Route('/tasks/done', name: 'task_list_done')]
+    public function listOfDoneTasks( TaskRepository $taskRepository, Security $security, TranslatorInterface $translator): Response
+    {
+        $user = $security->getUser();
+        if (!$user instanceof UserInterface) {
+            $this->addFlash('error', $translator->trans('Task.View.Error', [], 'messages'));
+            return $this->redirectToRoute('app_home');
+        }
+
+        $taskList =  $taskRepository->findByRoleAndStatus($user, true);
         return $this->render('task/list-done.html.twig', [
             'controller_name' => 'TaskController',
             'tasks' => $taskList,
@@ -139,12 +163,14 @@ class TaskController extends AbstractController
         $entityManager->flush();
         if ($task->isIsDone()) {
             $this->addFlash('success', $translator->trans('Task.isDone', [], 'messages' ));
+            return $this->redirectToRoute('task_list_done');
         } else {
             $this->addFlash('success', $translator->trans('Task.isUndone.Success', [], 'messages' ));
+            return $this->redirectToRoute('task_list_undone');
         }
         
 
-        return $this->redirectToRoute('task_list');
+        return $this->redirectToRoute('task_list_undone');
     }
 
     /**
