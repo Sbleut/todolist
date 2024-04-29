@@ -53,11 +53,11 @@
 							</li>
 						{% endif %}
 
-						{# {% if app.user.role %}
+						{% if app.user and "ROLE_ADMIN" in app.user.roles %}
 							<li class="nav-item">
 								<a href="{{ path('user_list') }}" class="nav-link">Liste des utilisateurs Admin</a>
 							</li>
-						{% endif %} #}
+						{% endif %}
 
 						{% if not app.user and 'login' != app.request.attributes.get('_route') %}
 							<li class="nav-item">

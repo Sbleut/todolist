@@ -105,35 +105,32 @@ class UserController extends AbstractController
      * @param TranslatorInterface $translator The translator for translating flash messages.
      * @return Response A response containing the form for editing the user.
      */
-    #[Route('/user/{id}/edit', name: 'user_edit')]
-    public function editUser(User $user, Request $request, EntityManagerInterface $entityManager, Security $security, TranslatorInterface $translator): Response
-    {
-        if (!$this->isGranted('USER_EDIT', $security->getUser())){
-            $this->addFlash('error', $translator->trans('User.Edit.Error', [], 'messages'));
-            return $this->redirectToRoute('app_home');
-        }
+    // #[Route('/user/{id}/edit', name: 'user_edit')]
+    // public function editUser(User $user, Request $request, EntityManagerInterface $entityManager, Security $security, TranslatorInterface $translator): Response
+    // {
+    //     if (!$this->isGranted('USER_EDIT', $security->getUser())){
+    //         $this->addFlash('error', $translator->trans('User.Edit.Error', [], 'messages'));
+    //         return $this->redirectToRoute('app_home');
+    //     }
 
-        $form = $this->createForm(UserType::class, $user)
-            ->remove('email')
-            ->remove('username')
-            ->remove('password');
-        $form->handleRequest($request);
+    //     $form = $this->createForm(UserType::class, $user);
+    //     $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user->setRoles($form->get('roles')->getData());
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         $user->setRoles($form->get('roles')->getData());
 
-            $entityManager->flush();
+    //         $entityManager->flush();
 
-            $this->addFlash('success',  $translator->trans('User.Edit.Success', [], 'messages'));
+    //         $this->addFlash('success',  $translator->trans('User.Edit.Success', [], 'messages'));
 
-            return $this->redirectToRoute('user_list');
-        }
+    //         return $this->redirectToRoute('user_list');
+    //     }
 
-        return $this->render('user/edit.html.twig', [
-            'form' => $form->createView(),
-            'user' => $user,
-        ]);
-    }
+    //     return $this->render('user/edit.html.twig', [
+    //         'form' => $form->createView(),
+    //         'user' => $user,
+    //     ]);
+    // }
 
     /**
      * Edit a user.

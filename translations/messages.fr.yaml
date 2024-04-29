@@ -32,6 +32,8 @@ User:
   Edit:
     Error: Vous ne pouvez pas modifier cet utilisateur.
     Success: L'utilisateur a bien été modifié.
+Password:
+  Tooweak: Votre mot de passe est trop faible.
 Login:
   Title: Connectez-vous!
   As: Vous êtes connectez en tant que 

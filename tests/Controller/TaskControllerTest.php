@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests;
+namespace App\Tests\Controller;
 
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -22,5 +22,42 @@ class TaskControllerTest extends WebTestCase
         $client->followRedirect();
         $this->assertEquals('/tasks/done', $client->getRequest()->getRequestUri());
     }
+
+    public function testCreateTasks(): void
+    {
+        $client = static::createClient();
+        // Loggin as Toto User
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneByEmail('toto@gmail.com');
+        $client->loginUser($testUser);
+        $crawler = $client->request('GET', '/tasks/create');
+        $btnCrawler = $crawler->selectButton('Ajouter');
+        $form = $btnCrawler->form();
+        $client->submit($form, [
+            'task[title]' => 'TestTask 101',
+            'task[content]' => 'Thsi is the best task ever.',
+        ]);
+        $client->followRedirect();
+        $this->assertEquals('/tasks/undone', $client->getRequest()->getRequestUri());
+    }
+
+    public function testEditTasks(): void
+    {
+        $client = static::createClient();
+        // Loggin as Toto User
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneByEmail('toto@gmail.com');
+        $client->loginUser($testUser);
+        $crawler = $client->request('GET', '/tasks/55/edit');
+        $btnCrawler = $crawler->selectButton('Modifier');
+        $form = $btnCrawler->form();
+        $client->submit($form, [
+            'task[title]' => 'TestTask 101',
+            'task[content]' => 'This is the edit task test.',
+        ]);
+        $client->followRedirect();
+        $this->assertEquals('/tasks/undone', $client->getRequest()->getRequestUri());
+    }
+
 
 }
