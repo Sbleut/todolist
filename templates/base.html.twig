@@ -16,7 +16,9 @@
 		<link
 		href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
 		<!-- Custom CSS -->
-		<link href="{{ asset('css/shop-homepage.css')}}" rel="stylesheet"> {% block stylesheets %}{% endblock %}
+		<link href="{{ asset('css/shop-homepage.css')}}" rel="stylesheet"> 
+		{% block stylesheets %}
+		{% endblock %}
 
 		{% block javascripts %}
 			{% block importmap %}
@@ -44,12 +46,18 @@
 								<a href="{{ path('task_create') }}" class="nav-link">Créer une tâche</a>
 							</li>
 							<li class="nav-item">
-								<a href="{{ path('task_list') }}" class="nav-link ">Liste de vos tâches</a>
+								<a href="{{ path('task_list_undone') }}" class="nav-link ">Liste de vos tâches</a>
 							</li>
 							<li class="nav-item">
 								<a href="{{ path('app_logout') }}" class="nav-link">Se déconnecter</a>
 							</li>
 						{% endif %}
+
+						{# {% if app.user.role %}
+							<li class="nav-item">
+								<a href="{{ path('user_list') }}" class="nav-link">Liste des utilisateurs Admin</a>
+							</li>
+						{% endif %} #}
 
 						{% if not app.user and 'login' != app.request.attributes.get('_route') %}
 							<li class="nav-item">
