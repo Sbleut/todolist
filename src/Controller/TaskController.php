@@ -84,7 +84,7 @@ class TaskController extends AbstractController
         $task = new Task();
         if (!$this->isGranted('TASK_CREATE', $task)) {
             $this->addFlash('error', $translator->trans('Task.Create.Error', [], 'messages'));
-            return $this->redirectToRoute('task_list');
+            return $this->redirectToRoute('task_list_undone');
         }
         $form = $this->createForm(FormTaskType::class, $task);
         $form->handleRequest($request);
@@ -98,7 +98,7 @@ class TaskController extends AbstractController
 
             $this->addFlash('success', $translator->trans('Task.Create.Success', [], 'messages'));
 
-            return $this->redirectToRoute('task_list');
+            return $this->redirectToRoute('task_list_undone');
         }
         return $this->render('task/create.html.twig', [
             'task' => $task,
@@ -130,12 +130,13 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $task->setIsDone(false);
             $entityManager->persist($task);
             $entityManager->flush();
 
             $this->addFlash('success', $translator->trans('Task.Edit.Success', ['%task%' => $task->getTitle()], 'messages'));
 
-            return $this->redirectToRoute('task_list');
+            return $this->redirectToRoute('task_list_undone');
         }
 
         return $this->render('task/edit.html.twig', [
