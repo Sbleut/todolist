@@ -23,7 +23,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Bienvenue sur Todo List');
         // System pour rester connecté et faire les tests avec le même user et faire la suite des tests.
     }
-
+    
     public function testLogout(): void
     {
         $client = static::createClient();
@@ -37,6 +37,7 @@ class SecurityControllerTest extends WebTestCase
         $crawler = $client->request('GET', '/logout');
         
         $client->followRedirect();
+        $this->assertSelectorTextContains('p.alert-success', 'Vous êtes déconnecté.');
         $this->assertEquals('/', $client->getRequest()->getRequestUri());
         $this->assertSelectorTextContains('h1', 'Bienvenue sur Todo List');
     }

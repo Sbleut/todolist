@@ -192,14 +192,14 @@ class TaskController extends AbstractController
         if (!$this->isGranted('TASK_DELETE', $task)) {
             
             $this->addFlash('error', $translator->trans('Task.Delete.Error', ['%task%' => $task->getTitle()], 'messages' ));
-            return $this->redirectToRoute('task_list');
+            return $this->redirectToRoute('task_list_undone');
         }
         
         $entityManager->remove($task);
         $entityManager->flush();
 
         $this->addFlash('success', $translator->trans('Task.Delete.Success', ['%task%' => $task->getTitle()],'messages'));
-        return $this->redirectToRoute('task_list');
+        return $this->redirectToRoute('task_list_undone');
     }
 
 }

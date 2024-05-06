@@ -11,7 +11,7 @@ class TaskVoter extends Voter
 {
     public const EDIT = 'TASK_EDIT';
     public const CREATE = 'TASK_CREATE';
-    public const VIEW = 'POST_VIEW';
+    public const VIEW = 'TASK_VIEW';
     public const DELETE = 'TASK_DELETE';
 
     private function isAuthorOrAdmin(mixed $subject, UserInterface $user): bool
@@ -49,8 +49,7 @@ class TaskVoter extends Voter
                 // return true or false
                 break;
             case self::VIEW:
-                // logic to determine if the user can VIEW
-                // return true or false
+                return true;
                 break;
             case self::DELETE:
                 return $this->isAuthorOrAdmin($subject, $user);

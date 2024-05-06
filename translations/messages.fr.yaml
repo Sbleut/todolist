@@ -42,3 +42,5 @@ Login:
   Email : Email
   Password: Mot de passe
   Sign: Se connecter
+Logout:
+  Success: Vous êtes déconnecté.
