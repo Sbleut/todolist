@@ -39,29 +39,6 @@
 				</div>
 			{% endfor %}
 		</div>
-		<div class="d-flex flex-column task-column">
-			{% for task in tasks %}
-				{% if task.isDone %}
-					<div class="task-card card mt-2">
-						<h4 class="card-header ">
-							<a class="text-decoration-none" href="{{ path('task_edit', {'id' : task.id }) }}">{{ task.title }}</a>
-						</h4>
-						<form class="m-2" action="{{ path('task_toggle', {'id' : task.id }) }}">
-							<button class="btn btn-warning btn-sm pull-right badge">{{'Task.List.Done'|trans()}}</button>
-						</form>
-						<div class="card-body">
-
-							<p>{{ task.content }}</p>
-							<div class="d-flex justify-content-evenly">
-								<p>{{ task.createdAt|date('Y-m-d H:i:s') }}</p>
-								<form action="{{ path('task_delete', {'id' : task.id }) }}">
-									<button class="btn btn-danger btn-sm pull-right"><img src="{{ asset('icon/trash.svg') }}" class="card-img-top" alt="Icon for viewing the list of completed tasks"></button>
-								</form>
-							</div>
-						</div>
-					</div>
-				{% endif %}
-			{% endfor %}
-		</div>
+		
 	</div>
 {% endblock %}

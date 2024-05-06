@@ -34,12 +34,19 @@ composer install
 DATABASE_URL=mysql://db_user:db_password@127.0.0.1:3306/db_name?serverVersion=5.7
 
 4. Si vous avez le CLI Symfony, exécutez les commandes suivantes :
+
  - Créez la base de données avec la commande :
+ ```
  symfony console doctrine:database:create
+  ```
  - Lancez la migration avec la commande :
+  ```
  symfony console doctrine:migrations:migrate
+  ```
  - Ajoutez des données factices à la base de données avec la commande :
+  ```
  symfony console doctrine:fixtures:load
+  ```
 
 Remarque : Si vous n'avez pas le client Symfony, remplacez symfony console par php bin/console (par exemple : php bin/console doctrine:database:create).
 

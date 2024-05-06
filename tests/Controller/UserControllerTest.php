@@ -50,7 +50,20 @@ class UserControllerTest extends WebTestCase
         $userRepository = static::getContainer()->get(UserRepository::class);
         $testUser = $userRepository->findOneByEmail('admin1@gmail.com');
         $client->loginUser($testUser);
-        $crawler = $client->request('GET', '/user/16/role/admin');
+        $crawler = $client->request('GET', '/user/63/role/admin');
+        $client->followRedirect();
+        $this->assertEquals('/users', $client->getRequest()->getRequestUri());
+        $this->assertResponseIsSuccessful();
+    }
+
+    public function testSwitchToUser(): void
+    {
+        $client = static::createClient();
+        // Loggin as Admin1 User
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneByEmail('admin1@gmail.com');
+        $client->loginUser($testUser);
+        $crawler = $client->request('GET', '/user/65/role/admin');
         $client->followRedirect();
         $this->assertEquals('/users', $client->getRequest()->getRequestUri());
         //$this->assertSame('Superbe ! L\'utilisateur a bien été modifé.', $crawler->filter('alert alert-success')->text());

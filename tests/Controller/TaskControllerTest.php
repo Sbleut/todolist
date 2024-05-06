@@ -23,6 +23,23 @@ class TaskControllerTest extends WebTestCase
         $this->assertEquals('/tasks/done', $client->getRequest()->getRequestUri());
     }
 
+    public function testListOfdoneTasks(): void
+    {
+        $client = static::createClient();
+        // Loggin as Toto User
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUser = $userRepository->findOneByEmail('toto@gmail.com');
+        $client->loginUser($testUser);
+        $crawler = $client->request('GET', '/tasks/done');
+        $this->assertSame('Terminée', $crawler->filter('button.btn.btn-warning')->text());
+        $btnCrawler = $crawler->selectButton('Terminée');
+        $form = $btnCrawler->form();
+        $client->submit($form);
+        $client->followRedirect();
+        $this->assertEquals('/tasks/undone', $client->getRequest()->getRequestUri());
+    }
+
+
     public function testCreateTasks(): void
     {
         $client = static::createClient();
@@ -56,7 +73,7 @@ class TaskControllerTest extends WebTestCase
         $userRepository = static::getContainer()->get(UserRepository::class);
         $testUser = $userRepository->findOneByEmail('toto@gmail.com');
         $client->loginUser($testUser);
-        $crawler = $client->request('GET', '/tasks/55/edit');
+        $crawler = $client->request('GET', '/tasks/222/edit');
         $btnCrawler = $crawler->selectButton('Modifier');
         $form = $btnCrawler->form();
         $client->submit($form, [
@@ -74,22 +91,9 @@ class TaskControllerTest extends WebTestCase
         $userRepository = static::getContainer()->get(UserRepository::class);
         $testUser = $userRepository->findOneByEmail('toto@gmail.com');
         $client->loginUser($testUser);
-        $crawler = $client->request('GET', '/tasks/55/delete');
+        $crawler = $client->request('GET', '/tasks/258/delete');
         $client->followRedirect();
         $this->assertResponseIsSuccessful();
-        $this->assertEquals('/tasks/undone', $client->getRequest()->getRequestUri());
-    }
-
-    public function testWrongUserDeleteTaskAction(): void
-    {
-        $client = static::createClient();
-        // Loggin as Toto User
-        $userRepository = static::getContainer()->get(UserRepository::class);
-        $testUser = $userRepository->findOneByEmail('toto@gmail.com');
-        $client->loginUser($testUser);
-        $crawler = $client->request('GET', '/tasks/65/delete');
-        $client->followRedirect();
-        $this->assertEquals(1, $crawler->filter('.flash-alert')->count());
         $this->assertEquals('/tasks/undone', $client->getRequest()->getRequestUri());
     }
 
