@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -73,7 +74,10 @@ class TaskControllerTest extends WebTestCase
         $userRepository = static::getContainer()->get(UserRepository::class);
         $testUser = $userRepository->findOneByEmail('toto@gmail.com');
         $client->loginUser($testUser);
-        $crawler = $client->request('GET', '/tasks/222/edit');
+        $taskRepository = static::getContainer()->get(TaskRepository::class);
+        $testtasklist = $taskRepository->findByRoleAndStatus($testUser, true);
+        $taskEditUrl= '/tasks/' . $testtasklist[0]->getId() . '/edit';
+        $crawler = $client->request('GET', $taskEditUrl);
         $btnCrawler = $crawler->selectButton('Modifier');
         $form = $btnCrawler->form();
         $client->submit($form, [
