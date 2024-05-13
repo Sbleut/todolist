@@ -18,9 +18,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class TaskRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry, private Security $security)
+    protected $userRepository;
+
+    public function __construct(ManagerRegistry $registry, private Security $security, UserRepository $userRepository)
     {
         parent::__construct($registry, Task::class);
+        $this->userRepository = $userRepository;
 
     }
 
@@ -37,7 +40,9 @@ class TaskRepository extends ServiceEntityRepository
             ->andwhere('task.author = :user')
             ->andwhere('task.isDone = :statu');
         if ($this->security->isGranted('ROLE_ADMIN')) {
-            $query->orwhere('task.author = 99');
+            $userAnonym = $this->userRepository->findOneBy(['username'=> 'Anonyme']);
+            $query->setParameter('userAnonym', $userAnonym)
+                ->orwhere('task.author = :userAnonym');
         }
         return $query->getQuery()->getResult();
     }

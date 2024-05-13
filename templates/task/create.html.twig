@@ -5,8 +5,10 @@
         {{ form_start(form, {'action' : path('task_create')}) }}
             {{ form_label(form.title, 'Task.Create.Title'|trans()) }}
             {{ form_widget(form.title) }}
+            {{ form_errors(form.title) }}
             {{ form_label(form.content, 'Task.Create.Content'|trans()) }}
             {{ form_widget(form.content) }}
+            {{ form_errors(form.content) }}
 
             <button type="submit" class="btn btn-success pull-right mt-2">{{'Task.Create.Add'|trans()}}</button>
         {{ form_end(form) }}

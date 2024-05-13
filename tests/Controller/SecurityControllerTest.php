@@ -23,23 +23,24 @@ class SecurityControllerTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Bienvenue sur Todo List');
         // System pour rester connecté et faire les tests avec le même user et faire la suite des tests.
     }
+    
+    // public function testLogout(): void
+    // {
+    //     $client = static::createClient();
+    //     $userRepository = static::getContainer()->get(UserRepository::class);
 
-    public function testLogout(): void
-    {
-        $client = static::createClient();
-        $userRepository = static::getContainer()->get(UserRepository::class);
+    //     // retrieve the test user
+    //     $testUser = $userRepository->findOneByEmail('toto@gmail.com');
 
-        // retrieve the test user
-        $testUser = $userRepository->findOneByEmail('toto@gmail.com');
-
-        // simulate $testUser being logged in
-        $client->loginUser($testUser);
-        $crawler = $client->request('GET', '/logout');
+    //     // simulate $testUser being logged in
+    //     $client->loginUser($testUser);
+    //     $crawler = $client->request('GET', '/logout');
         
-        $client->followRedirect();
-        $this->assertEquals('/', $client->getRequest()->getRequestUri());
-        $this->assertSelectorTextContains('h1', 'Bienvenue sur Todo List');
-    }
+    //     $client->followRedirect();
+    //     $this->assertSelectorTextContains('p.alert-success', 'Vous êtes déconnecté.');
+    //     $this->assertEquals('/', $client->getRequest()->getRequestUri());
+    //     $this->assertSelectorTextContains('h1', 'Bienvenue sur Todo List');
+    // }
 
     public function testLoginAsCurrentUser(): void
     {

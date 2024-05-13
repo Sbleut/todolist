@@ -45,6 +45,14 @@ class AppFixtures extends Fixture
 
         ]);
 
+        $user3 = UserFactory::createOne([
+            'email' => 'admin2@gmail.com',
+            'password' => 'v:9m52L/CqD7v',
+            'roles' => ["ROLE_ADMIN"],
+            'username' => 'Admin2',
+
+        ]);
+
 
 
         // Nourrir avec des infos qui vont bien. Re Hash de password. 
@@ -55,6 +63,18 @@ class AppFixtures extends Fixture
                 'author' => UserFactory::random()
             ];
         });
+        TaskFactory::createOne([
+            'title' => 'Toto1stTask',
+            'content' => 'This Toto 1st task to be tested',
+            'isDone' => true,
+            'author' => $user1
+        ]);
+        TaskFactory::createOne([
+            'title' => 'Toto2nd Task',
+            'content' => 'This Toto 2nd task to be tested',
+            'isDone' => false,
+            'author' => $user1
+        ]);
 
         
     }

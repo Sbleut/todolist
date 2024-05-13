@@ -62,7 +62,6 @@ class UserController extends AbstractController
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             
             $user->setRoles($form->get('roles')->getData());
@@ -75,7 +74,7 @@ class UserController extends AbstractController
 
             //Toto : 9g7DyjDEv3
             //Anonyme : Sans
-            //Admin1 : d4W2Q$PR#2sH$D7v
+            //Admin1 :  
 
             $entityManager->persist($user);
             $entityManager->flush();

@@ -1,0 +1,6 @@
+Username:
+  Unique: Ce nom d'utilisateur existe déjà.
+Email:
+  Unique: Cet email existe déjà.
+Password:
+  Tooweak: Votre mot de passe n'est pas assez complexe.
