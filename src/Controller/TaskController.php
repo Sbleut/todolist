@@ -165,7 +165,7 @@ class TaskController extends AbstractController
         $entityManager->persist($task);
         $entityManager->flush();
         if ($task->isIsDone()) {
-            $this->addFlash('success', $translator->trans('Task.isDone', [], 'messages' ));
+            $this->addFlash('success', $translator->trans('Task.isDone.Success', [], 'messages' ));
             return $this->redirectToRoute('task_list_done');
         } else {
             $this->addFlash('success', $translator->trans('Task.isUndone.Success', [], 'messages' ));
