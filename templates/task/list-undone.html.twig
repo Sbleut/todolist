@@ -11,15 +11,18 @@
 	</div>
 
 	<div class="d-flex justify-content-evenly">
-		<div class="d-flex flex-column task-column flex-lg-row">
+		<div class="d-flex flex-column justify-content-evenly task-column flex-lg-row">
 			{% for task in tasks %}
 				{% if task.isDone == false %}
-					<div class="task-card card mt-2">
+					<div class="task-card card m-2">
 						<h4 class="card-header">
 							<a class="text-decoration-none" href="{{ path('task_edit', {'id' : task.id }) }}">{{ task.title }}</a>
 						</h4>
-						<form class="m-2" action="{{ path('task_toggle', {'id' : task.id }) }}">
+						<form class="m-2 d-flex" action="{{ path('task_toggle', {'id' : task.id }) }}">
 							<button class="btn btn-success btn-sm pull-right badge">{{'Task.List.Todo'| trans()}}</button>
+							{% if task.author.username == 'Anonyme'%}
+								<p class="m-1 btn btn-secondary btn-sm pull-right disabled" >Anonyme</p>
+							{% endif %}
 						</form>
 						<div class="card-body">
 							<p>{{ task.content }}</p>

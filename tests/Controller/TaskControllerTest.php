@@ -95,7 +95,10 @@ class TaskControllerTest extends WebTestCase
         $userRepository = static::getContainer()->get(UserRepository::class);
         $testUser = $userRepository->findOneByEmail('toto@gmail.com');
         $client->loginUser($testUser);
-        $crawler = $client->request('GET', '/tasks/258/delete');
+        $taskRepository = static::getContainer()->get(TaskRepository::class);
+        $testtasklist = $taskRepository->findByRoleAndStatus($testUser, true);
+        $taskEditUrl= '/tasks/' . $testtasklist[0]->getId() . '/delete';
+        $crawler = $client->request('GET', $taskEditUrl);
         $client->followRedirect();
         $this->assertResponseIsSuccessful();
         $this->assertEquals('/tasks/undone', $client->getRequest()->getRequestUri());

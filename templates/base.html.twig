@@ -46,7 +46,10 @@
 								<a href="{{ path('task_create') }}" class="nav-link">Créer une tâche</a>
 							</li>
 							<li class="nav-item">
-								<a href="{{ path('task_list_undone') }}" class="nav-link ">Liste de vos tâches</a>
+								<a href="{{ path('task_list_undone') }}" class="nav-link">Liste des tâches à faire</a>
+							</li>
+							<li class="nav-item">
+								<a href="{{ path('task_list_done') }}" class="nav-link" >Liste des tâches terminées</a>
 							</li>
 							<li class="nav-item">
 								<a href="{{ path('app_logout') }}" class="nav-link">Se déconnecter</a>
@@ -55,7 +58,7 @@
 
 						{% if app.user and "ROLE_ADMIN" in app.user.roles %}
 							<li class="nav-item">
-								<a href="{{ path('user_list') }}" class="nav-link">Liste des utilisateurs Admin</a>
+								<a href="{{ path('user_list') }}" class="nav-link">Liste des utilisateurs</a>
 							</li>
 						{% endif %}
 

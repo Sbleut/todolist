@@ -123,7 +123,7 @@ class TaskController extends AbstractController
     {
         if (!$this->isGranted('TASK_EDIT', $task)) {
             $this->addFlash('error', $translator->trans('Task.Edit.Error', ['%task%' => $task->getTitle()], 'messages'));
-            return $this->redirectToRoute('task_list');
+            return $this->redirectToRoute('task_list_undone');
         }
         $form = $this->createForm(FormTaskType::class, $task);
 
@@ -138,6 +138,8 @@ class TaskController extends AbstractController
 
             return $this->redirectToRoute('task_list_undone');
         }
+
+
 
         return $this->render('task/edit.html.twig', [
             'form' => $form->createView(),
