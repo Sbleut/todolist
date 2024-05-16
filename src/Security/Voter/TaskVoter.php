@@ -25,6 +25,14 @@ class TaskVoter extends Voter
         return false;
     }
 
+    private function isAuthor(mixed $subject, UserInterface $user): bool
+    {
+        if ($subject->getAuthor() === $user) {
+            return true;
+        }
+        return false;
+    }
+
     protected function supports(string $attribute, mixed $subject): bool
     {
         // replace with your own logic
@@ -44,7 +52,7 @@ class TaskVoter extends Voter
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case self::EDIT:
-                return $this->isAuthorOrAdmin($subject, $user);
+                return $this->isAuthor($subject, $user);
                 // logic to determine if the user can EDIT
                 // return true or false
                 break;

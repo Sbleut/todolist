@@ -40,7 +40,13 @@ class UserController extends AbstractController
 
         // First item of the Array is Anonym therefore we remove it.
         // If Anonym user is removed or changed modify this code.
-        unset($userList[0]);
+        // unset(Admin1)
+        foreach($userList as $key=>$user) {
+            $userEmail = $user->getEmail();
+            if($userEmail === 'admin1@gmail.com' || $userEmail === 'anonym@.com'){
+                unset($userList[$key]);
+            }
+        }
         
         return $this->render('user/list.html.twig', [
             'controller_name' => 'UserController',
