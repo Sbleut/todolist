@@ -1,6 +1,7 @@
 Task:
   List:
-    Title: Listes de vos tâches en cours
+    TitleDone: Listes de vos tâches terminées
+    TitleUndone: Listes de vos tâches en cours
     Create: Créer une tâche
     Todo: A faire
     Done: Terminée
@@ -18,8 +19,10 @@ Task:
   Edit:
     Error: Vous ne pouvez pas modifier la tâche %task%.
     Success: La tâche  %task% a bien été modifiée.
-  isDone: La tâche a bien été marquée comme "faite".
-  isUndone: La tâche a bien été marqué comme "à faire"
+  isDone:
+    Success: La tâche a bien été marquée comme "faite".
+  isUndone:
+    Success: La tâche a bien été marqué comme "à faire"
   Delete:
     Error: Vous ne pouvez pas effectuer cette action.
     Success: La tâche %task% a bien été supprimée.

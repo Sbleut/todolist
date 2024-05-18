@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class TaskRepository extends ServiceEntityRepository
 {
-    protected $userRepository;
+    protected UserRepository $userRepository;
 
     public function __construct(ManagerRegistry $registry, private Security $security, UserRepository $userRepository)
     {
@@ -32,7 +32,7 @@ class TaskRepository extends ServiceEntityRepository
      * 
      * @return Task[] Returns an array of Task objects
      */
-    public function findByRoleAndStatus(UserInterface $user, $statu): array
+    public function findByRoleAndStatus(UserInterface $user, bool $statu): array
     {
         $query = $this->createQueryBuilder('task')
             ->setParameter('user', $user)

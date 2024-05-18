@@ -1,14 +1,13 @@
-ToDoList
+# ToDoList
 ========
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/8421aa982ab14367af6699c767a78de1)](https://app.codacy.com/gh/Sbleut/todolist/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
-
-### Installation
+## Installation
 
 1. Download the project directly from the following link or use the command git clone :
 
-git clone https://github.com/Sbleut/todolist.git
+git clone <https://github.com/Sbleut/todolist.git>
 
 2. À la racine du projet, exécutez la commande suivante pour installer les dépendances via Composer:
 
@@ -16,7 +15,7 @@ git clone https://github.com/Sbleut/todolist.git
 composer install
 ```
 
-### Configuration de la base de données
+## Configuration de la base de données
 
 3. Modifiez le fichier .env situé à la racine du projet avec vos informations spécifiques à votre base de données. Voici un exemple de configuration :
 

@@ -40,7 +40,13 @@ class UserController extends AbstractController
 
         // First item of the Array is Anonym therefore we remove it.
         // If Anonym user is removed or changed modify this code.
-        unset($userList[0]);
+        // unset(Admin1)
+        foreach($userList as $key=>$user) {
+            $userEmail = $user->getEmail();
+            if($userEmail === 'admin1@gmail.com' || $userEmail === 'anonym@.com'){
+                unset($userList[$key]);
+            }
+        }
         
         return $this->render('user/list.html.twig', [
             'controller_name' => 'UserController',
@@ -74,7 +80,7 @@ class UserController extends AbstractController
 
             //Toto : 9g7DyjDEv3
             //Anonyme : Sans
-            //Admin1 :  
+            //Admin1 : d4W2Q$PR#2sH$D7v
 
             $entityManager->persist($user);
             $entityManager->flush();
@@ -149,7 +155,7 @@ class UserController extends AbstractController
      * @return Response A response containing the form for editing the user.
      */
     #[Route('/user/{id}/role/admin', name: 'user_role_admin')]
-    public function switchToAdmin(User $user, Request $request, EntityManagerInterface $entityManager, Security $security, TranslatorInterface $translator): Response
+    public function switchToAdmin(User $user,EntityManagerInterface $entityManager, Security $security, TranslatorInterface $translator): Response
     {
         if (!$this->isGranted('USER_EDIT', $security->getUser())){
             $this->addFlash('error', $translator->trans('User.Edit.Error', [], 'messages'));
@@ -164,7 +170,7 @@ class UserController extends AbstractController
     /**
      */
     #[Route('/user/{id}/role/user', name: 'user_role_user')]
-    public function switchToUser(User $user, Request $request, EntityManagerInterface $entityManager, Security $security, TranslatorInterface $translator): Response
+    public function switchToUser(User $user, EntityManagerInterface $entityManager, Security $security, TranslatorInterface $translator): Response
     {
         if (!$this->isGranted('USER_EDIT', $security->getUser())){
             $this->addFlash('error', $translator->trans('User.Edit.Error', [], 'messages'));
